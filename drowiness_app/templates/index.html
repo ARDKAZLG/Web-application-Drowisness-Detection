@@ -1,0 +1,165 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Detection Somnolence au Volant</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+
+    <link rel="stylesheet" href='{%static  "dist/css/bootstrap.min.css" %}'>
+    <link rel="stylesheet" href='{%static  "dist/css/font-awesome.min.css" %}'>
+    <link rel="stylesheet" href='{%static  "dist/css/style.css" %}'>
+    <link rel="stylesheet" href='{%static  "dist/css/normalize.css" %}'>
+    <link rel="stylesheet" href='{%static  "dist/css/main.css" %}'>
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
+    <style>
+      .rectangle-button {
+        position: relative;
+        width: 200px;
+        height: 50px;
+        background-color: #0ad7a1;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        border: 2px solid #48d7bf; /* Added border style */
+        border-radius: 4px; /* Added border radius for rounded corners */
+      }
+
+      .rectangle-button:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 0 50px 100px;
+        border-color: transparent transparent #48d7bf transparent;
+        transform: rotate(360deg);
+      }
+
+      /* Styling for the pop-up window */
+      .capture-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+      .capture-popup video {
+        width: 100%;
+        max-height: 80vh;
+      }
+
+      .capture-popup button {
+        display: block;
+        width: 100px;
+        margin: 10px auto;
+      }
+    </style>
+    <script src='{%static  "dist/js/vendor/modernizr-2.8.3.min.js" %}'></script>
+</head>
+
+<body style="background-image: url('{%static  "dist/img/thumbnail_fahrermuedigkeitserkennung.jpg" %}')">
+    <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <!-- Start Header Top Area -->
+
+    <div class="header-top-area" >
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="logo-area" style="color : aliceblue">
+                        <a href="#"><img src='{%static "dist/img/unnamed.jpg" %}' style="width: 30px;" alt="" /></a>
+                        <b style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Drowisness Detection</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Header Top Area -->
+    <!-- Mobile Menu start -->
+   
+    <!-- Mobile Menu end -->
+    <!-- Main Menu area start-->
+  
+    <div class="realtime-statistic-area" >
+       
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12" >
+                  <div style="background-color: gainsboro; display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  height: 70vh; margin-left: 950px; 
+                  " >
+                  
+                    <div class="realtime-visitor-ctn">
+                        <div class="realtime-vst-sg">
+                          <h2 style="color: rgb(11, 32, 115);">Eye Detection</h2>
+                        <p> pour démarrer la détection de la somnolence cliquer sur button ci dessous</p>
+                        <br>
+                        <form id="start_form" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="action" value="start">
+                          <button type="button" class="rectangle-button" onclick="openPopup('start_form')">▶ Démarrer</button>
+                        </form>
+                        <br>
+                        <form id="stop_form" method="POST" action="{% url 'start_tracking' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="action" value="stop">
+                          <button type="submit" class="rectangle-button" id="stop_button">⏹ Arréter</button>
+                        </form>
+                         </div>
+                     </div>
+            </div>
+            </div>
+            </div>
+    <!-- Start Footer area-->
+    <div class="footer-copyright-area" style="position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="footer-copy-right">
+                        <p>Copyright © 2023 
+. All rights reserved.</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src='{%static  "dist/js/vendor/jquery-1.12.4.min.js" %}'></script>
+    <script src='{%static  "dist/js/bootstrap.min.js" %}'></script>
+    <script>
+      var popupWindow;
+    
+      function openPopup(formId) {
+        if (formId === 'start_form') {
+          var left = (screen.width - 1300) / 2;
+          var top = (screen.height - 390) / 2;
+          popupWindow = window.open("{% url 'start_tracking' %}", "popupWindow", "width=700,height=380,left=" + left + ",top=" + top);
+        } 
+        document.getElementById('stop_button').addEventListener('click', function(event) {
+          popupWindow.close();
+        });
+      }
+    </script>
+ 
+
+</body>
+
+</html>
